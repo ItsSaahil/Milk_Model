@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Quality Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Milk Quality Analysis System</h1>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <h2>Enter Current Parameters</h2>
+                <form id="predictionForm">
+                    <div class="form-group">
+                        <label for="temperature">Temperature (°C):</label>
+                        <input type="number" id="temperature" name="temperature" step="0.1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ph_level">pH Level:</label>
+                        <input type="number" id="ph_level" name="ph_level" step="0.1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="light_intensity">Light Intensity:</label>
+                        <input type="number" id="light_intensity" name="light_intensity" required>
+                    </div>
+
+                    <button type="submit">Analyze</button>
+                </form>
+            </div>
+
+            <div class="results-section">
+                <div class="prediction-result">
+                    <h2>Prediction Results</h2>
+                    <div class="spoilage-prediction">
+                        <h3>Estimated Days Until Spoilage:</h3>
+                        <p id="spoilageResult">-</p>
+                    </div>
+                </div>
+
+                <div class="visualization">
+                    <h2>Water Content Prediction Over Time</h2>
+                    <div id="predictionPlot"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
