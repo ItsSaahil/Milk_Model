@@ -5,50 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Milk Quality Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Use an explicit Plotly version (avoid the generic "latest" bundle which is old and triggers warnings) -->
+    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js"></script>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Milk Quality Analysis System</h1>
+            <h1>🥛 Milk Quality Analysis System</h1>
+            <p class="subtitle">Predict spoilage and get storage recommendations</p>
         </header>
 
         <main>
-            <div class="input-section">
-                <h2>Enter Current Parameters</h2>
+            <div class="input-section card">
+                <h2>📝 Enter Current Parameters</h2>
                 <form id="predictionForm">
                     <div class="form-group">
                         <label for="temperature">Temperature (°C):</label>
-                        <input type="number" id="temperature" name="temperature" step="0.1" required>
+                        <input type="number" id="temperature" name="temperature" step="0.1" value="7" required>
+                        <small>Optimal: 4-7°C</small>
                     </div>
 
                     <div class="form-group">
                         <label for="ph_level">pH Level:</label>
-                        <input type="number" id="ph_level" name="ph_level" step="0.1" required>
+                        <input type="number" id="ph_level" name="ph_level" step="0.1" value="6.8" required>
+                        <small>Optimal: 6.5-7.0</small>
                     </div>
 
                     <div class="form-group">
-                        <label for="light_intensity">Light Intensity:</label>
-                        <input type="number" id="light_intensity" name="light_intensity" required>
+                        <label for="light_intensity">Light Intensity (lux):</label>
+                        <input type="number" id="light_intensity" name="light_intensity" value="50" required>
+                        <small>Optimal: &lt;100 lux</small>
                     </div>
 
-                    <button type="submit">Analyze</button>
+                    <button type="submit" class="btn-primary">🔍 Analyze</button>
                 </form>
             </div>
 
             <div class="results-section">
-                <div class="prediction-result">
-                    <h2>Prediction Results</h2>
+                <!-- Risk & Spoilage Prediction Card -->
+                <div class="card prediction-result">
+                    <h2>⏱️ Spoilage Prediction</h2>
                     <div class="spoilage-prediction">
-                        <h3>Estimated Days Until Spoilage:</h3>
-                        <p id="spoilageResult">-</p>
+                        <div class="days-box">
+                            <p id="spoilageResult" class="days-value">-</p>
+                            <p class="days-label">Days Until Spoilage</p>
+                        </div>
+                        <div class="risk-box">
+                            <p id="riskLevel" class="risk-value">-</p>
+                            <div class="risk-bar">
+                                <div id="riskBar" class="risk-bar-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="risk-label"><span id="riskScore">0</span>/10 Risk Score</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="visualization">
-                    <h2>Water Content Prediction Over Time</h2>
+                <!-- Current Conditions Card -->
+                <div class="card conditions-card">
+                    <h2>🌡️ Current Conditions</h2>
+                    <div class="conditions-grid">
+                        <div class="condition-item">
+                            <span class="label">Temperature</span>
+                            <span id="condTemp" class="value">-</span>
+                        </div>
+                        <div class="condition-item">
+                            <span class="label">pH Level</span>
+                            <span id="condPH" class="value">-</span>
+                        </div>
+                        <div class="condition-item">
+                            <span class="label">Light Intensity</span>
+                            <span id="condLight" class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations Card -->
+                <div class="card recommendations-card">
+                    <h2>✅ Recommendations</h2>
+                    <ul id="recommendationsList" class="recommendations-list">
+                        <li>Enter parameters and analyze to see recommendations</li>
+                    </ul>
+                </div>
+
+                <!-- Preventions Card -->
+                <div class="card preventions-card">
+                    <h2>⚠️ Prevention Tips</h2>
+                    <ul id="preventionsList" class="preventions-list">
+                        <li>Enter parameters and analyze to see prevention tips</li>
+                    </ul>
+                </div>
+
+                <!-- Optimal Conditions Card -->
+                <div class="card optimal-card">
+                    <h2>🎯 Optimal Storage Conditions</h2>
+                    <div id="optimalConditions" class="optimal-grid">
+                        <p>Conditions will appear after analysis</p>
+                    </div>
+                </div>
+
+                <!-- Water Content Plot -->
+                <div class="card visualization">
+                    <h2>📊 Water Content Prediction Over Time</h2>
                     <div id="predictionPlot"></div>
+                </div>
+
+                <!-- Download Button -->
+                <div class="card download-section">
+                    <h2>📥 Export Results</h2>
+                    <button id="downloadBtn" class="btn-secondary" style="display: none;">
+                        📥 Download Enriched CSV Report
+                    </button>
+                    <p id="downloadStatus" style="display: none; color: #27ae60; margin-top: 10px;"></p>
                 </div>
             </div>
         </main>
