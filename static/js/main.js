@@ -30,17 +30,24 @@ document.getElementById('predictionForm').addEventListener('submit', async (e) =
         
         // Update spoilage prediction
         const spoilageResult = document.getElementById('spoilageResult');
-        spoilageResult.textContent = `${data.days_until_spoilage} days`;
-        
-        // Color code based on days remaining
-        if (data.days_until_spoilage <= 1) {
-            spoilageResult.style.color = '#e74c3c'; // Red for critical
-        } else if (data.days_until_spoilage <= 2) {
-            spoilageResult.style.color = '#f39c12'; // Orange for warning
-        } else if (data.days_until_spoilage <= 4) {
-            spoilageResult.style.color = '#e67e22'; // Orange-red for medium
+        if (data.days_until_spoilage === 0) {
+            spoilageResult.textContent = 'EXPIRED';
+            spoilageResult.style.color = '#c0392b'; // Dark red for expired
+            spoilageResult.style.fontWeight = 'bold';
         } else {
-            spoilageResult.style.color = '#27ae60'; // Green for good
+            spoilageResult.textContent = `${data.days_until_spoilage} days`;
+            spoilageResult.style.fontWeight = 'normal';
+            
+            // Color code based on days remaining
+            if (data.days_until_spoilage <= 1) {
+                spoilageResult.style.color = '#e74c3c'; // Red for critical
+            } else if (data.days_until_spoilage <= 2) {
+                spoilageResult.style.color = '#f39c12'; // Orange for warning
+            } else if (data.days_until_spoilage <= 4) {
+                spoilageResult.style.color = '#e67e22'; // Orange-red for medium
+            } else {
+                spoilageResult.style.color = '#27ae60'; // Green for good
+            }
         }
 
         // Update risk level and score
